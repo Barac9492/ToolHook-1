@@ -18,18 +18,18 @@ import {
 } from 'firebase/firestore';
 
 // Firebase 함수들 정의
-let collection = firestoreCollection;
-let query = firestoreQuery;
-let where = firestoreWhere;
-let orderBy = firestoreOrderBy;
-let limit = firestoreLimit;
-let getDocs = firestoreGetDocs;
-let getDoc = firestoreGetDoc;
-let doc = firestoreDoc;
-let addDoc = firestoreAddDoc;
-let updateDoc = firestoreUpdateDoc;
-let Timestamp = FirestoreTimestamp;
-let serverTimestamp = firestoreServerTimestamp;
+const collection = firestoreCollection;
+const query = firestoreQuery;
+const where = firestoreWhere;
+const orderBy = firestoreOrderBy;
+const limit = firestoreLimit;
+const getDocs = firestoreGetDocs;
+const getDoc = firestoreGetDoc;
+const doc = firestoreDoc;
+const addDoc = firestoreAddDoc;
+const updateDoc = firestoreUpdateDoc;
+const Timestamp = FirestoreTimestamp;
+const serverTimestamp = firestoreServerTimestamp;
 
 // 임시 데이터 생성 함수 (Firebase가 설정되지 않았을 때 사용)
 const createMockTools = (count: number = 5): Tool[] => {
