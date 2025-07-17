@@ -3,18 +3,12 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Challenge } from '@/types';
 
-type RouteContext = {
-  params: {
-    id: string
-  }
-}
-
 export async function GET(
   request: NextRequest,
-  context: RouteContext
+  { params }: { params: { id: string } }
 ) {
   try {
-    const id = context.params.id;
+    const id = params.id;
 
     const docRef = doc(db, 'challenges', id);
     const docSnap = await getDoc(docRef);
