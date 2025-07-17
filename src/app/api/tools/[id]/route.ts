@@ -6,7 +6,7 @@ import { Tool } from '@/types';
 export async function GET(
   request: NextRequest,
   context: { params: { id: string } }
-) {
+): Promise<Response> {
   try {
     const id = context.params.id;
     
