@@ -1,28 +1,35 @@
 import { db, isFirebaseInitialized } from './firebase';
 import { Tool, Stack, Challenge, User, ChallengeExecution } from '@/types';
+import {
+    collection as firestoreCollection,
+    query as firestoreQuery,
+    where as firestoreWhere,
+    orderBy as firestoreOrderBy,
+    limit as firestoreLimit,
+    getDocs as firestoreGetDocs,
+    getDoc as firestoreGetDoc,
+    doc as firestoreDoc,
+    addDoc as firestoreAddDoc,
+    updateDoc as firestoreUpdateDoc,
+    Timestamp as FirestoreTimestamp,
+    serverTimestamp as firestoreServerTimestamp,
+    DocumentData,
+    QueryDocumentSnapshot
+} from 'firebase/firestore';
 
-// Firebase 함수들을 조건부로 import
-let collection: any, query: any, where: any, orderBy: any, limit: any, getDocs: any, getDoc: any, doc: any, addDoc: any, updateDoc: any, Timestamp: any, serverTimestamp: any;
-
-if (isFirebaseInitialized) {
-  try {
-    const firestore = require('firebase/firestore');
-    collection = firestore.collection;
-    query = firestore.query;
-    where = firestore.where;
-    orderBy = firestore.orderBy;
-    limit = firestore.limit;
-    getDocs = firestore.getDocs;
-    getDoc = firestore.getDoc;
-    doc = firestore.doc;
-    addDoc = firestore.addDoc;
-    updateDoc = firestore.updateDoc;
-    Timestamp = firestore.Timestamp;
-    serverTimestamp = firestore.serverTimestamp;
-  } catch (error) {
-    console.warn('Failed to import Firebase functions:', error);
-  }
-}
+// Firebase 함수들 정의
+let collection = firestoreCollection;
+let query = firestoreQuery;
+let where = firestoreWhere;
+let orderBy = firestoreOrderBy;
+let limit = firestoreLimit;
+let getDocs = firestoreGetDocs;
+let getDoc = firestoreGetDoc;
+let doc = firestoreDoc;
+let addDoc = firestoreAddDoc;
+let updateDoc = firestoreUpdateDoc;
+let Timestamp = FirestoreTimestamp;
+let serverTimestamp = firestoreServerTimestamp;
 
 // 임시 데이터 생성 함수 (Firebase가 설정되지 않았을 때 사용)
 const createMockTools = (count: number = 5): Tool[] => {
@@ -120,12 +127,15 @@ export const toolsService = {
             );
 
             const snapshot = await getDocs(q);
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                createdAt: doc.data().createdAt.toDate(),
-                updatedAt: doc.data().updatedAt.toDate()
-            } as Tool));
+            return snapshot.docs.map((docSnapshot: QueryDocumentSnapshot<DocumentData>) => {
+                const data = docSnapshot.data();
+                return {
+                    id: docSnapshot.id,
+                    ...data,
+                    createdAt: data.createdAt?.toDate() || new Date(),
+                    updatedAt: data.updatedAt?.toDate() || new Date()
+                } as Tool;
+            });
         }, createMockTools(limitCount));
     },
 
@@ -139,12 +149,15 @@ export const toolsService = {
             );
 
             const snapshot = await getDocs(q);
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                createdAt: doc.data().createdAt.toDate(),
-                updatedAt: doc.data().updatedAt.toDate()
-            } as Tool));
+            return snapshot.docs.map((docSnapshot: QueryDocumentSnapshot<DocumentData>) => {
+                const data = docSnapshot.data();
+                return {
+                    id: docSnapshot.id,
+                    ...data,
+                    createdAt: data.createdAt?.toDate() || new Date(),
+                    updatedAt: data.updatedAt?.toDate() || new Date()
+                } as Tool;
+            });
         }, createMockTools(10).filter(tool => tool.category === category));
     },
 
@@ -159,12 +172,15 @@ export const toolsService = {
             );
 
             const snapshot = await getDocs(q);
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                createdAt: doc.data().createdAt.toDate(),
-                updatedAt: doc.data().updatedAt.toDate()
-            } as Tool));
+            return snapshot.docs.map((docSnapshot: QueryDocumentSnapshot<DocumentData>) => {
+                const data = docSnapshot.data();
+                return {
+                    id: docSnapshot.id,
+                    ...data,
+                    createdAt: data.createdAt?.toDate() || new Date(),
+                    updatedAt: data.updatedAt?.toDate() || new Date()
+                } as Tool;
+            });
         }, createMockTools(limitCount).filter(tool => tool.isFree));
     },
 
@@ -176,11 +192,12 @@ export const toolsService = {
 
             if (!docSnap.exists()) return null;
 
+            const data = docSnap.data();
             return {
                 id: docSnap.id,
-                ...docSnap.data(),
-                createdAt: docSnap.data().createdAt.toDate(),
-                updatedAt: docSnap.data().updatedAt.toDate()
+                ...data,
+                createdAt: data.createdAt?.toDate() || new Date(),
+                updatedAt: data.updatedAt?.toDate() || new Date()
             } as Tool;
         }, createMockTools(10).find(tool => tool.id === id) || null);
     },
@@ -212,12 +229,15 @@ export const stacksService = {
             );
 
             const snapshot = await getDocs(q);
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                createdAt: doc.data().createdAt.toDate(),
-                updatedAt: doc.data().updatedAt.toDate()
-            } as Stack));
+            return snapshot.docs.map((docSnapshot: QueryDocumentSnapshot<DocumentData>) => {
+                const data = docSnapshot.data();
+                return {
+                    id: docSnapshot.id,
+                    ...data,
+                    createdAt: data.createdAt?.toDate() || new Date(),
+                    updatedAt: data.updatedAt?.toDate() || new Date()
+                } as Stack;
+            });
         }, createMockStacks(limitCount));
     },
 
@@ -232,12 +252,15 @@ export const stacksService = {
             );
 
             const snapshot = await getDocs(q);
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                createdAt: doc.data().createdAt.toDate(),
-                updatedAt: doc.data().updatedAt.toDate()
-            } as Stack));
+            return snapshot.docs.map((docSnapshot: QueryDocumentSnapshot<DocumentData>) => {
+                const data = docSnapshot.data();
+                return {
+                    id: docSnapshot.id,
+                    ...data,
+                    createdAt: data.createdAt?.toDate() || new Date(),
+                    updatedAt: data.updatedAt?.toDate() || new Date()
+                } as Stack;
+            });
         }, createMockStacks(limitCount).filter(stack => stack.isFeatured));
     },
 
@@ -251,12 +274,15 @@ export const stacksService = {
             );
 
             const snapshot = await getDocs(q);
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                createdAt: doc.data().createdAt.toDate(),
-                updatedAt: doc.data().updatedAt.toDate()
-            } as Stack));
+            return snapshot.docs.map((docSnapshot: QueryDocumentSnapshot<DocumentData>) => {
+                const data = docSnapshot.data();
+                return {
+                    id: docSnapshot.id,
+                    ...data,
+                    createdAt: data.createdAt?.toDate() || new Date(),
+                    updatedAt: data.updatedAt?.toDate() || new Date()
+                } as Stack;
+            });
         }, createMockStacks(2));
     },
 
@@ -276,12 +302,15 @@ export const stacksService = {
                 );
 
                 const snapshot = await getDocs(q);
-                stacks.push(...snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data(),
-                    createdAt: doc.data().createdAt.toDate(),
-                    updatedAt: doc.data().updatedAt.toDate()
-                } as Stack)));
+                stacks.push(...snapshot.docs.map((docSnapshot: QueryDocumentSnapshot<DocumentData>) => {
+                    const data = docSnapshot.data();
+                    return {
+                        id: docSnapshot.id,
+                        ...data,
+                        createdAt: data.createdAt?.toDate() || new Date(),
+                        updatedAt: data.updatedAt?.toDate() || new Date()
+                    } as Stack;
+                }));
             }
 
             return stacks;
@@ -296,11 +325,12 @@ export const stacksService = {
 
             if (!docSnap.exists()) return null;
 
+            const data = docSnap.data();
             return {
                 id: docSnap.id,
-                ...docSnap.data(),
-                createdAt: docSnap.data().createdAt.toDate(),
-                updatedAt: docSnap.data().updatedAt.toDate()
+                ...data,
+                createdAt: data.createdAt?.toDate() || new Date(),
+                updatedAt: data.updatedAt?.toDate() || new Date()
             } as Stack;
         }, createMockStacks(5).find(stack => stack.id === id) || null);
     },
@@ -342,11 +372,14 @@ export const challengesService = {
             );
 
             const snapshot = await getDocs(q);
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                createdAt: doc.data().createdAt.toDate()
-            } as Challenge));
+            return snapshot.docs.map((docSnapshot: QueryDocumentSnapshot<DocumentData>) => {
+                const data = docSnapshot.data();
+                return {
+                    id: docSnapshot.id,
+                    ...data,
+                    createdAt: data.createdAt?.toDate() || new Date()
+                } as Challenge;
+            });
         }, createMockChallenges(limitCount));
     },
 
@@ -359,11 +392,14 @@ export const challengesService = {
             );
 
             const snapshot = await getDocs(q);
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                createdAt: doc.data().createdAt.toDate()
-            } as Challenge));
+            return snapshot.docs.map((docSnapshot: QueryDocumentSnapshot<DocumentData>) => {
+                const data = docSnapshot.data();
+                return {
+                    id: docSnapshot.id,
+                    ...data,
+                    createdAt: data.createdAt?.toDate() || new Date()
+                } as Challenge;
+            });
         }, createMockChallenges(1).filter(challenge => challenge.stackId === stackId));
     },
 
@@ -389,12 +425,15 @@ export const challengesService = {
             );
 
             const snapshot = await getDocs(q);
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                createdAt: doc.data().createdAt.toDate(),
-                completedAt: doc.data().completedAt?.toDate()
-            } as ChallengeExecution));
+            return snapshot.docs.map((docSnapshot: QueryDocumentSnapshot<DocumentData>) => {
+                const data = docSnapshot.data();
+                return {
+                    id: docSnapshot.id,
+                    ...data,
+                    createdAt: data.createdAt?.toDate() || new Date(),
+                    completedAt: data.completedAt?.toDate()
+                } as ChallengeExecution;
+            });
         }, []);
     }
 };
@@ -409,10 +448,11 @@ export const usersService = {
 
             if (!docSnap.exists()) return null;
 
+            const data = docSnap.data();
             return {
                 id: docSnap.id,
-                ...docSnap.data(),
-                createdAt: docSnap.data().createdAt.toDate()
+                ...data,
+                createdAt: data.createdAt?.toDate() || new Date()
             } as User;
         }, null);
     },
@@ -452,7 +492,7 @@ export const usersService = {
     },
 
     // 사용자에게 뱃지 추가
-    async addBadgeToUser(userId: string, badge: string): Promise<void> {
+    async addBadgeToUser(userId: string, badgeId: string): Promise<void> {
         return safeFirebaseQuery(async () => {
             const userRef = doc(db, 'users', userId);
             await updateDoc(userRef, {
