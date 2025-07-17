@@ -5,10 +5,10 @@ import { Tool } from '@/types';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
-    const id = params.id;
+    const id = context.params.id;
     
     const docRef = doc(db, 'tools', id);
     const docSnap = await getDoc(docRef);
