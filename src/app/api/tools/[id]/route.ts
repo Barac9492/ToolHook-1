@@ -3,12 +3,14 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Tool } from '@/types';
 
+type Params = { params: { id: string } };
+
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: Params
 ): Promise<Response> {
   try {
-    const id = context.params.id;
+    const id = params.id;
     
     const docRef = doc(db, 'tools', id);
     const docSnap = await getDoc(docRef);

@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { doc, getDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 
+type Params = { params: { id: string } };
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: Record<string, string> }
-) {
+  { params }: Params
+): Promise<Response> {
   const id = params.id
 
   try {
