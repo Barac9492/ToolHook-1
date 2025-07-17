@@ -1,11 +1,16 @@
-// Firebase 관련 타입과 함수들을 조건부로 import
-let db: any = null;
-let auth: any = null;
-let storage: any = null;
-let app: any = null;
+import { FirebaseApp, initializeApp, getApps } from 'firebase/app';
+import { Firestore, getFirestore } from 'firebase/firestore';
+import { Auth, getAuth } from 'firebase/auth';
+import { FirebaseStorage, getStorage } from 'firebase/storage';
+
+// Firebase 관련 타입과 함수들 정의
+let db: Firestore | null = null;
+let auth: Auth | null = null;
+let storage: FirebaseStorage | null = null;
+let app: FirebaseApp | null = null;
 
 // Firebase 초기화 함수
-const initializeFirebase = () => {
+const initializeFirebase = (): boolean => {
   try {
     // 환경 변수가 설정되어 있고 유효한 경우에만 Firebase 초기화
     const hasValidConfig = 
@@ -19,12 +24,6 @@ const initializeFirebase = () => {
       return false;
     }
 
-    // 동적으로 Firebase 모듈 import
-    const { initializeApp, getApps } = require('firebase/app');
-    const { getFirestore } = require('firebase/firestore');
-    const { getAuth } = require('firebase/auth');
-    const { getStorage } = require('firebase/storage');
-
     const firebaseConfig = {
       apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
       authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -35,7 +34,8 @@ const initializeFirebase = () => {
     };
 
     // Firebase 초기화 (중복 초기화 방지)
-    app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
+    const apps = getApps();
+    app = apps.length ? apps[0] : initializeApp(firebaseConfig);
     
     // Firebase 서비스 초기화
     db = getFirestore(app);
