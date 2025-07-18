@@ -34,3 +34,20 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Development with Mock Data
+
+Set `USE_MOCK_DATA=true` in your `.env` file to use mock data for challenges, stacks, tools, and user profile during development.
+
+## Populating Data from Web Scraping (After Deployment)
+
+1. Fill in your scraping logic in `scripts/scrapeAndPopulate.ts`.
+2. Set up your Firebase credentials in your environment variables.
+3. Run the script:
+
+```bash
+cd toolhook-toolhook
+npx ts-node scripts/scrapeAndPopulate.ts
+```
+
+This will scrape data from the web and populate your Firebase database.

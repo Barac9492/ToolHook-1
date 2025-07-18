@@ -1,5 +1,7 @@
 import { Brain, Plus, Filter, Star } from 'lucide-react';
 import Link from 'next/link';
+import { mockStacks } from '@/lib/mockData';
+import { Stack } from '@/types';
 
 export const revalidate = 3600; // 1시간마다 재검증
 
@@ -11,8 +13,11 @@ interface SearchParams {
   q?: string;
 }
 
+const useMock = process.env.USE_MOCK_DATA === 'true';
+
 // 데이터 가져오기 함수들
-async function getFeaturedStacks() {
+async function getFeaturedStacks(): Promise<Stack[]> {
+  if (useMock) return mockStacks.filter((s: Stack) => s.isFeatured);
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/stacks/featured?limit=3`, { next: { revalidate: 3600 } });
     if (!res.ok) {
@@ -26,7 +31,8 @@ async function getFeaturedStacks() {
   }
 }
 
-async function getPopularStacks(params: SearchParams) {
+async function getPopularStacks(params: SearchParams): Promise<Stack[]> {
+  if (useMock) return mockStacks;
   try {
     const { category, free, sort, q } = params;
     
@@ -83,14 +89,14 @@ export default async function StacksPage({
   ]);
   
   // 임시 데이터 처리 (실제 API 연동 시 제거)
-  const processedFeaturedStacks = featuredStacks.map((stack, i) => ({
+  const processedFeaturedStacks = featuredStacks.map((stack: Stack, i: number) => ({
     ...stack,
     freePercentage: [100, 66, 33][i % 3],
     toolCount: stack.toolIds?.length || 3,
     category: stack.category || categories[i % categories.length],
   }));
   
-  const processedPopularStacks = popularStacks.map((stack, i) => ({
+  const processedPopularStacks = popularStacks.map((stack: Stack, i: number) => ({
     ...stack,
     freePercentage: [100, 75, 50, 25, 0][i % 5],
     toolCount: stack.toolIds?.length || (3 + (i % 2)),
@@ -149,7 +155,7 @@ export default async function StacksPage({
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {processedFeaturedStacks.length > 0 ? (
-              processedFeaturedStacks.map((stack) => (
+              processedFeaturedStacks.map((stack: Stack) => (
                 <div key={stack.id} className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-purple-100">
                   <div className="flex justify-between items-start mb-4">
                     <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs">
@@ -252,7 +258,7 @@ export default async function StacksPage({
           <h2 className="text-2xl font-bold mb-6">인기 스택</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {processedPopularStacks.length > 0 ? (
-              processedPopularStacks.map((stack) => (
+              processedPopularStacks.map((stack: Stack) => (
                 <div key={stack.id} className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex justify-between items-start mb-4">
                     <span className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-xs">

@@ -1,6 +1,10 @@
 import { Search, Filter, Star, BookmarkPlus } from 'lucide-react';
 import Link from 'next/link';
 import { getCategoryColor } from '@/lib/utils';
+import { mockTools } from '@/lib/mockData';
+import { Tool } from '@/types';
+
+const useMock = process.env.USE_MOCK_DATA === 'true';
 
 export const revalidate = 3600; // 1시간마다 재검증
 
@@ -14,7 +18,8 @@ interface SearchParams {
 }
 
 // 데이터 가져오기 함수
-async function getTools(params: SearchParams) {
+async function getTools(params: SearchParams): Promise<Tool[]> {
+  if (useMock) return mockTools;
   try {
     const { category, price, llm, sort, q } = params;
     
@@ -219,7 +224,7 @@ export default async function ToolsPage({
         {/* Tools Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {tools.length > 0 ? (
-            tools.map((tool) => (
+            tools.map((tool: Tool) => (
               <div key={tool.id} className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between mb-4">
                   <div className={`w-12 h-12 ${getCategoryColor(tool.category)} rounded-lg flex items-center justify-center text-white text-xl font-bold`}>

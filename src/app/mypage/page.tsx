@@ -1,12 +1,14 @@
 import { User, Star, Award, BookOpen, Settings, Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { mockUser } from '@/lib/mockData';
+
+const useMock = process.env.USE_MOCK_DATA === 'true';
 
 export default function MyPage() {
   // 로그인 상태 확인 (실제로는 서버 컴포넌트에서 세션 체크)
   const isLoggedIn = false; // 임시로 false로 설정
-  
-  // 사용자 데이터 (임시)
-  const user = {
+  // 사용자 데이터
+  const user = useMock ? mockUser : {
     id: 'user-1',
     displayName: '홍길동',
     email: 'user@example.com',

@@ -1,10 +1,15 @@
 import { Gamepad2, Trophy, Clock, Star, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { mockChallenges } from '@/lib/mockData';
+import { Challenge } from '@/types';
+
+const useMock = process.env.USE_MOCK_DATA === 'true';
 
 export const revalidate = 3600; // 1시간마다 재검증
 
 // 데이터 가져오기 함수
-async function getChallenges() {
+async function getChallenges(): Promise<Challenge[]> {
+  if (useMock) return mockChallenges;
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/challenges/active?limit=6`, { next: { revalidate: 3600 } });
     if (!res.ok) {
@@ -149,11 +154,11 @@ export default async function ChallengesPage() {
           <h2 className="text-2xl font-bold mb-6">모든 챌린지</h2>
           {challenges.length > 1 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {challenges.slice(1).map((challenge) => (
+              {challenges.slice(1).map((challenge: Challenge) => (
                 <div key={challenge.id} className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex justify-between items-start mb-4">
-                    <span className={`${difficultyColors[challenge.difficulty]} px-3 py-1 rounded-full text-xs`}>
-                      {difficultyText[challenge.difficulty]}
+                    <span className={`${difficultyColors[challenge.difficulty as keyof typeof difficultyColors]} px-3 py-1 rounded-full text-xs`}>
+                      {difficultyText[challenge.difficulty as keyof typeof difficultyText]}
                     </span>
                     <div className="flex items-center">
                       <span className="text-xs text-gray-500 mr-1">{challenge.participantCount}명 참여</span>
